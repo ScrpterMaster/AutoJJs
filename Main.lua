@@ -1,62 +1,43 @@
--- Initial Configuration
-local Options = {
-    Keybind = 'Home',
-    Language = 'en-us',
-    Interval = 2.5,
-    Rainbow = false,
-}
+local Players = game:GetService("Players"):GetChildren()
+local RunService = game:GetService("RunService")
+local highlight = Instance.new("Highlight")
+highlight.Name = "Highlight"
 
--- Services
-local TweenService = game:GetService('TweenService')
-local Players = game:GetService('Players')
-local LocalPlayer = Players.LocalPlayer
-
--- Modules
-local UI = require("UI")
-local Character = require("Modules/Character")
-local RemoteChat = require("Modules/RemoteChat")
-local NumberFormatter = require("Modules/NumberFormatter")
-
--- Constants
-local PlayerCharacter = Character.new(LocalPlayer)
-local UIElements = UI.UIElements
-
--- Thread Variables
-local ThreadHandle
-local IsThreadFinished = false
-local IsToggled = false
-
--- Settings
-local Settings = {
-    Keybind = Options.Keybind,
-    Started = false,
-    ShouldJump = false,
-    Configuration = {
-        Start = nil,
-        End = nil,
-        Prefix = nil,
-    }
-}
-
--- Functions
-local function HandleTextChange(Obj)
-    -- Logic for handling text changes
+for i, v in pairs(Players) do
+    repeat wait() until v.Character
+    if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+        local highlightClone = highlight:Clone()
+        highlightClone.Adornee = v.Character
+        highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
+        highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        highlightClone.Name = "Highlight"
+    end
 end
 
-local function ExecuteCommand(n, prefix, jump)
-    -- Logic to execute the command
+game.Players.PlayerAdded:Connect(function(player)
+    repeat wait() until player.Character
+    if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+        local highlightClone = highlight:Clone()
+        highlightClone.Adornee = player.Character
+        highlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
+        highlightClone.Name = "Highlight"
+    end
+end)
+
+game.Players.PlayerRemoving:Connect(function(playerRemoved)
+    playerRemoved.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
+end)
+
+RunService.Heartbeat:Connect(function()
+    for i, v in pairs(Players) do
+        repeat wait() until v.Character
+        if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+            local highlightClone = highlight:Clone()
+            highlightClone.Adornee = v.Character
+            highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
+            highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlightClone.Name = "Highlight"
+            task.wait()
+        end
 end
-
-local function EndExecution()
-    -- Logic to end the execution
-end
-
-local function StartExecution()
-    -- Logic to start the execution
-end
-
--- UI Configuration and Interactivity
--- ...
-
--- Main Program
--- ...
+end)
